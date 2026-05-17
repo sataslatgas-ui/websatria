@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MASTEX — Forest Warrior Workout</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --forest-dark: #0a1a0d;
+    --forest-deep: #0f2414;
+    --forest-mid: #1a3a20;
+    --forest-green: #2d6a4f;
+    --forest-light: #40916c;
+    --forest-bright: #52b788;
+    --leaf-gold: #d4a017;
+    --leaf-amber: #e8c56a;
+    --fog: rgba(180, 210, 190, 0.08);
+    --bark: #3d2b1f;
+    --moss: #4a7c59;
+    --cream: #f0ead6;
+    --white-fog: rgba(240, 234, 214, 0.9);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--forest-dark);
+    color: var(--cream);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ─── LOADING SCREEN ─── */
+  #loading-screen {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, #020b04 0%, #051208 40%, #0a1a0d 100%);
+    z-index: 9999;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+
+  .loading-forest-bg {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(45,106,79,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 20% 80%, rgba(52,183,120,0.08) 0%, transparent 60%);
+  }
+
+  /* Stars */
+  .stars {
+    position: absolute; inset: 0;
+    background-image: 
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 40%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.3) 0%, transparent 100%);
+  }
+
+  /* Silhouette forest trees */
+  .tree-silhouettes {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 45%;
+    display: flex; align-items: flex-end;
+  }
+
+  .tree {
+    flex: 1;
+    background: #010805;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    opacity: 0.9;
+    transform-origin: bottom center;
+    animation: treeSway 4s ease-in-out infinite;
+  }
+
+  .tree:nth-child(1) { height: 160px; animation-delay: 0s; }
+  .tree:nth-child(2) { height: 220px; animation-delay: 0.3s; }
+  .tree:nth-child(3) { height: 180px; animation-delay: 0.6s; }
+  .tree:nth-child(4) { height: 250px; animation-delay: 0.9s; }
+  .tree:nth-child(5) { height: 200px; animation-delay: 1.2s; }
+  .tree:nth-child(6) { height: 240px; animation-delay: 0.4s; }
+  .tree:nth-child(7) { height: 170px; animation-delay: 0.7s; }
+  .tree:nth-child(8) { height: 210px; animation-delay: 1.0s; }
+  .tree:nth-child(9) { height: 185px; animation-delay: 0.2s; }
+  .tree:nth-child(10) { height: 230px; animation-delay: 0.8s; }
+
+  @keyframes treeSway {
+    0%, 100% { transform: skewX(0deg); }
+    50% { transform: skewX(1deg); }
+  }
+
+  /* Airplane */
+  .plane-container {
+    position: absolute;
+    top: 25%;
+    animation: flyAcross 3.5s ease-in-out forwards;
+    z-index: 10;
+  }
+
+  @keyframes flyAcross {
+    0% { left: -15%; opacity: 0; }
+    10% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { left: 110%; opacity: 0; }
+  }
+
+  .plane-svg {
+    width: 80px;
+    filter: drop-shadow(0 0 12px rgba(82, 183, 136, 0.7)) drop-shadow(0 0 30px rgba(82, 183, 136, 0.3));
+    animation: planeBob 0.8s ease-in-out infinite;
+  }
+
+  @keyframes planeBob {
+    0%, 100% { transform: translateY(0px) rotate(-3deg); }
+    50% { transform: translateY(-8px) rotate(-1deg); }
+  }
+
+  .plane-trail {
+    position: absolute;
+    right: 100%; top: 50%;
+    transform: translateY(-50%);
+    width: 120px; height: 2px;
+    background: linear-gradient(to left, rgba(82,183,136,0.8), transparent);
+    animation: trailPulse 0.8s ease-in-out infinite;
+  }
+
+  @keyframes trailPulse {
+    0%, 100% { opacity: 0.8; width: 120px; }
+    50% { opacity: 0.4; width: 80px; }
+  }
+
+  /* Fireflies */
+  .firefly {
+    position: absolute;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--leaf-gold);
+    box-shadow: 0 0 6px 2px rgba(212,160,23,0.6);
+    animation: fireflyFloat var(--dur) ease-in-out infinite;
+  }
+
+  @keyframes fireflyFloat {
+    0% { transform: translate(0,0); opacity: 0; }
+    20% { opacity: 1; }
+    50% { transform: translate(var(--dx), var(--dy)); opacity: 0.8; }
+    80% { opacity: 1; }
+    100% { transform: translate(0,0); opacity: 0; }
+  }
+
+  .loading-content {
+    text-align: center; z-index: 10;
+    position: relative;
+  }
+
+  .loading-emblem {
+    width: 80px; height: 80px;
+    border: 2px solid var(--forest-bright);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    position: relative;
+    animation: emblemGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes emblemGlow {
+    0%, 100% { box-shadow: 0 0 15px rgba(82,183,136,0.3), inset 0 0 15px rgba(82,183,136,0.05); }
+    50% { box-shadow: 0 0 30px rgba(82,183,136,0.6), inset 0 0 20px rgba(82,183,136,0.1); }
+  }
+
+  .loading-emblem::before {
+    content: '🌲';
+    font-size: 36px;
+  }
+
+  .loading-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    background: linear-gradient(135deg, var(--forest-bright), var(--leaf-gold), var(--forest-bright));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+    animation: titleReveal 1s ease-out 0.5s both;
+  }
+
+  @keyframes titleReveal {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .loading-sub {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.4em;
+    color: var(--forest-bright);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    animation: titleReveal 1s ease-out 0.8s both;
+  }
+
+  .loading-bar-wrap {
+    width: 260px;
+    height: 3px;
+    background: rgba(82,183,136,0.15);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+    overflow: hidden;
+    animation: titleReveal 1s ease-out 1s both;
+  }
+
+  .loading-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--forest-bright), var(--leaf-gold));
+    border-radius: 2px;
+    width: 0%;
+    animation: loadProgress 3s ease-out 0.5s forwards;
+  }
+
+  @keyframes loadProgress {
+    0% { width: 0%; }
+    30% { width: 35%; }
+    60% { width: 65%; }
+    85% { width: 88%; }
+    100% { width: 100%; }
+  }
+
+  .loading-text {
+    font-size: 0.78rem;
+    letter-spacing: 0.3em;
+    color: rgba(82,183,136,0.6);
+    text-transform: uppercase;
+    animation: titleReveal 1s ease-out 1s both;
+  }
+
+  /* ─── PAGES ─── */
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ─── LANDING PAGE ─── */
+  #landing-page {
+    position: relative;
+    overflow: hidden;
+    background: var(--forest-dark);
+  }
+
+  /* 3D Forest Canvas */
+  #forest-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    opacity: 0.85;
+  }
+
+  .landing-overlay {
+    position: relative; z-index: 2;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    background: linear-gradient(
+      to bottom,
+      rgba(10,26,13,0.3) 0%,
+      rgba(10,26,13,0.5) 40%,
+      rgba(10,26,13,0.85) 100%
+    );
+  }
+
+  /* NAV */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 48px;
+    position: relative;
+    z-index: 10;
+    border-bottom: 1px solid rgba(82,183,136,0.1);
+    backdrop-filter: blur(4px);
+  }
+
+  .nav-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--forest-bright), var(--leaf-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.1em;
+  }
+
+  .nav-links {
+    display: flex; gap: 32px; list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(240,234,214,0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--forest-bright); }
+
+  .nav-cta {
+    background: transparent;
+    border: 1px solid var(--forest-bright);
+    color: var(--forest-bright) !important;
+    padding: 8px 24px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .nav-cta:hover {
+    background: var(--forest-bright);
+    color: var(--forest-dark) !important;
+  }
+
+  /* HERO */
+  .hero {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 80px 40px 120px;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(45,106,79,0.2);
+    border: 1px solid rgba(82,183,136,0.3);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--forest-bright);
+    margin-bottom: 28px;
+    animation: fadeSlideUp 0.8s ease-out 0.3s both;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    animation: fadeSlideUp 0.8s ease-out 0.5s both;
+  }
+
+  .hero-title .line1 {
+    display: block;
+    background: linear-gradient(135deg, var(--cream) 30%, var(--leaf-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-title .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--forest-bright), var(--leaf-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 0.6em;
+    letter-spacing: 0.2em;
+  }
+
+  .hero-desc {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.25rem;
+    color: rgba(240,234,214,0.7);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    font-style: italic;
+    animation: fadeSlideUp 0.8s ease-out 0.7s both;
+  }
+
+  .hero-btns {
+    display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+    animation: fadeSlideUp 0.8s ease-out 0.9s both;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--forest-green), var(--forest-light));
+    color: var(--cream);
+    border: none;
+    padding: 14px 36px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(45,106,79,0.4);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(45,106,79,0.6);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid rgba(240,234,214,0.3);
+    padding: 14px 36px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--forest-bright);
+    color: var(--forest-bright);
+  }
+
+  /* Features strip */
+  .features-strip {
+    background: rgba(15,36,20,0.8);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(82,183,136,0.15);
+    padding: 40px 48px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    position: relative; z-index: 2;
+  }
+
+  .feature-item {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    gap: 12px;
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 0 8px rgba(82,183,136,0.5));
+  }
+
+  .feature-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.85rem;
+    color: var(--forest-bright);
+    letter-spacing: 0.1em;
+  }
+
+  .feature-desc {
+    font-size: 0.82rem;
+    color: rgba(240,234,214,0.5);
+    line-height: 1.5;
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── LOGIN PAGE ─── */
+  #login-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--forest-dark) 0%, #061510 50%, var(--forest-dark) 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-bg-forest {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 30%;
+    background: linear-gradient(to top, rgba(45,106,79,0.08), transparent);
+  }
+
+  .login-decor {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(82,183,136,0.04) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(82,183,136,0.04) 0%, transparent 40%);
+    pointer-events: none;
+  }
+
+  .login-container {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 420px;
+  }
+
+  .login-header {
+    text-align: center; margin-bottom: 40px;
+  }
+
+  .login-emblem {
+    width: 70px; height: 70px;
+    border: 2px solid var(--forest-bright);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 28px;
+    box-shadow: 0 0 20px rgba(82,183,136,0.2);
+  }
+
+  .login-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--forest-bright), var(--leaf-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .login-subtitle {
+    font-size: 0.78rem;
+    color: rgba(82,183,136,0.6);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .login-card {
+    background: rgba(15,36,20,0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(82,183,136,0.15);
+    border-radius: 4px;
+    padding: 40px;
+  }
+
+  .form-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(82,183,136,0.15);
+    margin-bottom: 32px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    background: none; border: none;
+    color: rgba(240,234,214,0.4);
+    padding: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+
+  .tab-btn.active {
+    color: var(--forest-bright);
+    border-bottom-color: var(--forest-bright);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(82,183,136,0.7);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  input[type="email"], input[type="password"], input[type="text"] {
+    width: 100%;
+    background: rgba(10,26,13,0.6);
+    border: 1px solid rgba(82,183,136,0.2);
+    border-radius: 2px;
+    padding: 12px 16px;
+    color: var(--cream);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  input:focus { border-color: var(--forest-bright); }
+  input::placeholder { color: rgba(240,234,214,0.2); }
+
+  .btn-login {
+    width: 100%;
+    background: linear-gradient(135deg, var(--forest-green), var(--forest-light));
+    border: none;
+    color: var(--cream);
+    padding: 14px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(45,106,79,0.3);
+    margin-top: 8px;
+  }
+  .btn-login:hover {
+    box-shadow: 0 6px 25px rgba(45,106,79,0.5);
+    transform: translateY(-1px);
+  }
+  .btn-login:disabled {
+    opacity: 0.6; cursor: not-allowed; transform: none;
+  }
+
+  .form-error {
+    background: rgba(180,60,60,0.1);
+    border: 1px solid rgba(180,60,60,0.3);
+    border-radius: 2px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    color: #e07070;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .form-error.show { display: block; }
+
+  .form-success {
+    background: rgba(45,106,79,0.15);
+    border: 1px solid rgba(82,183,136,0.3);
+    border-radius: 2px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    color: var(--forest-bright);
+    margin-bottom: 16px;
+    display: none;
+  }
+  .form-success.show { display: block; }
+
+  .back-link {
+    text-align: center; margin-top: 20px;
+  }
+  .back-link a {
+    color: rgba(82,183,136,0.5);
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    transition: color 0.3s;
+    cursor: pointer;
+  }
+  .back-link a:hover { color: var(--forest-bright); }
+
+  /* ─── WORKOUT PAGE ─── */
+  #workout-page {
+    background: var(--forest-dark);
+    min-height: 100vh;
+  }
+
+  /* Top bar */
+  .workout-nav {
+    background: rgba(15,36,20,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(82,183,136,0.12);
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .workout-nav-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, var(--forest-bright), var(--leaf-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .user-info {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .user-avatar {
+    width: 36px; height: 36px;
+    background: var(--forest-green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    border: 1px solid rgba(82,183,136,0.3);
+  }
+
+  .user-name {
+    font-size: 0.85rem;
+    color: rgba(240,234,214,0.7);
+    font-weight: 500;
+  }
+
+  .btn-logout {
+    background: none;
+    border: 1px solid rgba(82,183,136,0.2);
+    color: rgba(82,183,136,0.6);
+    padding: 6px 14px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-logout:hover {
+    border-color: var(--forest-bright);
+    color: var(--forest-bright);
+  }
+
+  /* Workout content */
+  .workout-content {
+    max-width: 900px; margin: 0 auto;
+    padding: 48px 24px;
+  }
+
+  .workout-header {
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .workout-header::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--forest-bright), transparent);
+  }
+
+  .workout-date-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--forest-bright);
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+
+  .workout-page-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+
+  .workout-page-sub {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    color: rgba(240,234,214,0.4);
+    font-size: 1rem;
+  }
+
+  /* Progress */
+  .progress-section {
+    background: rgba(15,36,20,0.5);
+    border: 1px solid rgba(82,183,136,0.12);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 32px;
+    display: flex; gap: 32px; align-items: center;
+  }
+
+  .progress-circle {
+    position: relative;
+    width: 80px; height: 80px; flex-shrink: 0;
+  }
+
+  .progress-circle svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+  .progress-bg { stroke: rgba(82,183,136,0.1); }
+  .progress-fill {
+    stroke: var(--forest-bright);
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    transition: stroke-dashoffset 1s ease;
+  }
+
+  .progress-label {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--forest-bright);
+  }
+
+  .progress-info { flex: 1; }
+  .progress-title {
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(82,183,136,0.6);
+    margin-bottom: 6px;
+  }
+  .progress-stat {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.6rem;
+    color: var(--cream);
+  }
+  .progress-stat span { font-size: 0.9rem; color: rgba(240,234,214,0.4); }
+
+  /* Workout days */
+  .workout-days {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .day-card {
+    background: rgba(15,36,20,0.4);
+    border: 1px solid rgba(82,183,136,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .day-card:hover {
+    border-color: rgba(82,183,136,0.25);
+    background: rgba(15,36,20,0.6);
+  }
+  .day-card.completed {
+    border-color: rgba(82,183,136,0.25);
+    background: rgba(45,106,79,0.1);
+  }
+
+  .day-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid rgba(82,183,136,0.08);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .day-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.8rem;
+    color: var(--forest-bright);
+    letter-spacing: 0.1em;
+  }
+
+  .day-check-all {
+    font-size: 0.68rem;
+    color: rgba(82,183,136,0.4);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    transition: color 0.3s;
+  }
+  .day-check-all:hover { color: var(--forest-bright); }
+
+  .day-exercises { padding: 12px 20px 16px; }
+
+  .exercise-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(82,183,136,0.06);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .exercise-item:last-child { border-bottom: none; }
+  .exercise-item:hover { padding-left: 4px; }
+
+  .ex-checkbox {
+    width: 20px; height: 20px; flex-shrink: 0;
+    border: 1.5px solid rgba(82,183,136,0.3);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ex-checkbox.checked {
+    background: var(--forest-bright);
+    border-color: var(--forest-bright);
+  }
+
+  .ex-checkbox.checked::after {
+    content: '✓';
+    color: var(--forest-dark);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .ex-info { flex: 1; }
+  .ex-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--cream);
+    transition: color 0.3s;
+  }
+  .exercise-item:hover .ex-name { color: var(--forest-bright); }
+
+  .ex-detail {
+    font-size: 0.72rem;
+    color: rgba(240,234,214,0.3);
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .ex-checked-label {
+    font-size: 0.68rem;
+    color: var(--forest-bright);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .exercise-item.done .ex-checked-label { opacity: 1; }
+  .exercise-item.done .ex-name {
+    text-decoration: line-through;
+    color: rgba(240,234,214,0.3);
+  }
+
+  /* Save button */
+  .save-section {
+    display: flex; justify-content: flex-end; gap: 12px;
+    align-items: center;
+  }
+
+  .save-status {
+    font-size: 0.78rem;
+    color: var(--forest-bright);
+    opacity: 0;
+    transition: opacity 0.3s;
+    letter-spacing: 0.15em;
+  }
+  .save-status.visible { opacity: 1; }
+
+  .btn-save {
+    background: linear-gradient(135deg, var(--forest-green), var(--forest-light));
+    border: none;
+    color: var(--cream);
+    padding: 12px 32px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(45,106,79,0.3);
+  }
+  .btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45,106,79,0.5);
+  }
+  .btn-save:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    background: rgba(15,36,20,0.95);
+    border: 1px solid rgba(82,183,136,0.3);
+    border-radius: 4px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.85rem;
+    color: var(--cream);
+    z-index: 9999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .toast-icon { font-size: 1.2rem; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--forest-dark); }
+  ::-webkit-scrollbar-thumb { background: rgba(82,183,136,0.3); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .features-strip { grid-template-columns: 1fr; padding: 30px 20px; }
+    .hero { padding: 60px 20px 80px; }
+    .workout-content { padding: 32px 16px; }
+    .progress-section { flex-direction: column; text-align: center; }
+    .workout-days { grid-template-columns: 1fr; }
+    .login-card { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loading-screen">
+  <div class="loading-forest-bg"></div>
+  <div class="stars"></div>
+
+  <!-- Fireflies -->
+  <div class="firefly" style="left:15%;top:40%;--dur:3.5s;--dx:30px;--dy:-20px"></div>
+  <div class="firefly" style="left:75%;top:30%;--dur:4.2s;--dx:-25px;--dy:15px"></div>
+  <div class="firefly" style="left:40%;top:60%;--dur:3.8s;--dx:20px;--dy:-30px"></div>
+  <div class="firefly" style="left:85%;top:55%;--dur:5s;--dx:-15px;--dy:20px"></div>
+  <div class="firefly" style="left:25%;top:25%;--dur:4.5s;--dx:35px;--dy:10px"></div>
+  <div class="firefly" style="left:60%;top:70%;--dur:3.2s;--dx:-20px;--dy:-15px"></div>
+
+  <!-- Airplane -->
+  <div class="plane-container" id="plane">
+    <div class="plane-trail"></div>
+    <svg class="plane-svg" viewBox="0 0 100 60" fill="none">
+      <!-- Fuselage -->
+      <ellipse cx="45" cy="30" rx="35" ry="8" fill="#52b788" opacity="0.9"/>
+      <!-- Nose -->
+      <path d="M80 30 Q100 30 95 33 L80 38 Z" fill="#40916c"/>
+      <!-- Wings -->
+      <path d="M55 30 L35 10 L30 14 L50 30 Z" fill="#52b788" opacity="0.8"/>
+      <path d="M55 30 L35 50 L30 46 L50 30 Z" fill="#52b788" opacity="0.8"/>
+      <!-- Tail fin -->
+      <path d="M12 30 L5 18 L15 22 Z" fill="#40916c" opacity="0.9"/>
+      <path d="M12 30 L5 42 L15 38 Z" fill="#40916c" opacity="0.7"/>
+      <!-- Window strip -->
+      <rect x="50" y="26" width="25" height="4" rx="2" fill="rgba(212,160,23,0.4)"/>
+      <!-- Engines -->
+      <ellipse cx="42" cy="18" rx="8" ry="3" fill="#2d6a4f"/>
+      <ellipse cx="42" cy="42" rx="8" ry="3" fill="#2d6a4f"/>
+    </svg>
+  </div>
+
+  <!-- Tree silhouettes -->
+  <div class="tree-silhouettes">
+    <div class="tree"></div><div class="tree"></div><div class="tree"></div>
+    <div class="tree"></div><div class="tree"></div><div class="tree"></div>
+    <div class="tree"></div><div class="tree"></div><div class="tree"></div>
+    <div class="tree"></div>
+  </div>
+
+  <div class="loading-content">
+    <div class="loading-emblem"></div>
+    <div class="loading-title">MASTEX</div>
+    <div class="loading-sub">Forest Warrior · Workout System</div>
+    <div class="loading-bar-wrap">
+      <div class="loading-bar" id="loading-bar"></div>
+    </div>
+    <div class="loading-text" id="loading-text">Memuat sistem...</div>
+  </div>
+</div>
+
+<!-- LANDING PAGE -->
+<div class="page" id="landing-page">
+  <canvas id="forest-canvas"></canvas>
+
+  <div class="landing-overlay">
+    <nav>
+      <div class="nav-logo">MASTEX</div>
+      <ul class="nav-links">
+        <li><a href="#">Tentang</a></li>
+        <li><a href="#">Program</a></li>
+        <li><a href="#">Komunitas</a></li>
+        <li><a href="#" class="nav-cta" onclick="showLogin()">Masuk</a></li>
+      </ul>
+    </nav>
+
+    <div class="hero">
+      <div class="hero-badge">🌿 Kekuatan Alam · Disiplin Hutan</div>
+      <h1 class="hero-title">
+        <span class="line1">WARRIOR</span>
+        <span class="line2">OF THE FOREST</span>
+      </h1>
+      <p class="hero-desc">
+        Temukan kekuatan sejati dalam kesunyian hutan. Program latihan terstruktur yang menghubungkan disiplin tubuh dengan jiwa alam semesta.
+      </p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showLogin()">Mulai Perjalanan</button>
+        <button class="btn-secondary" onclick="showLogin('register')">Bergabung Gratis</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="features-strip">
+    <div class="feature-item">
+      <div class="feature-icon">🌲</div>
+      <div class="feature-title">Jadwal Hutan</div>
+      <div class="feature-desc">Program latihan mingguan terinspirasi kekuatan pohon-pohon besar yang tumbuh perlahan namun kokoh</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Pantau Progress</div>
+      <div class="feature-desc">Data latihan tersimpan otomatis di Firebase — akses dari mana saja, kapan saja</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🍃</div>
+      <div class="feature-title">Selaras Alam</div>
+      <div class="feature-desc">Filosofi latihan yang menyeimbangkan kekuatan, fleksibilitas, dan ketenangan pikiran</div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN PAGE -->
+<div class="page" id="login-page">
+  <div class="login-decor"></div>
+  <div class="login-bg-forest"></div>
+
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-emblem">🌳</div>
+      <div class="login-title">MASTEX</div>
+      <div class="login-subtitle">Forest Warrior Workout</div>
+    </div>
+
+    <div class="login-card">
+      <div class="form-tabs">
+        <button class="tab-btn active" onclick="switchTab('login')">Masuk</button>
+        <button class="tab-btn" onclick="switchTab('register')">Daftar</button>
+      </div>
+
+      <div id="error-msg" class="form-error"></div>
+      <div id="success-msg" class="form-success"></div>
+
+      <!-- Login Form -->
+      <div id="login-form">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="login-email" placeholder="warrior@forest.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn-login" onclick="doLogin()" id="login-btn">Masuk ke Hutan</button>
+      </div>
+
+      <!-- Register Form -->
+      <div id="register-form" style="display:none">
+        <div class="form-group">
+          <label>Nama Pejuang</label>
+          <input type="text" id="reg-name" placeholder="Nama lengkapmu">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="reg-email" placeholder="warrior@forest.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="Min. 6 karakter">
+        </div>
+        <button class="btn-login" onclick="doRegister()" id="reg-btn">Bergabung</button>
+      </div>
+    </div>
+
+    <div class="back-link">
+      <a onclick="showPage('landing-page')">← Kembali ke Halaman Utama</a>
+    </div>
+  </div>
+</div>
+
+<!-- WORKOUT PAGE -->
+<div class="page" id="workout-page">
+  <div class="workout-nav">
+    <div class="workout-nav-logo">MASTEX · Workout</div>
+    <div class="user-info">
+      <div class="user-avatar">🌿</div>
+      <span class="user-name" id="display-name">Pejuang</span>
+      <button class="btn-logout" onclick="doLogout()">Keluar</button>
+    </div>
+  </div>
+
+  <div class="workout-content">
+    <div class="workout-header">
+      <div class="workout-date-badge">📅 <span id="today-date"></span></div>
+      <h2 class="workout-page-title">Jadwal Latihan</h2>
+      <p class="workout-page-sub">Seperti pohon yang tumbuh perlahan — konsistensi adalah kunci</p>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-circle">
+        <svg viewBox="0 0 80 80">
+          <circle class="progress-bg" cx="40" cy="40" r="35" stroke-width="4" fill="none"/>
+          <circle class="progress-fill" id="progress-circle" cx="40" cy="40" r="35" stroke-width="4" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="progress-label" id="progress-pct">0%</div>
+      </div>
+      <div class="progress-info">
+        <div class="progress-title">Progress Minggu Ini</div>
+        <div class="progress-stat"><span id="done-count">0</span> / <span id="total-count">0</span> <span>latihan selesai</span></div>
+      </div>
+    </div>
+
+    <div class="workout-days" id="workout-days-container">
+      <!-- Generated by JS -->
+    </div>
+
+    <div class="save-section">
+      <div class="save-status" id="save-status">✓ Tersimpan ke Firebase</div>
+      <button class="btn-save" onclick="saveToFirebase()" id="save-btn">💾 Simpan Progress</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toast-icon">✓</div>
+  <div id="toast-msg">Berhasil!</div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, set, get }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDbQx6ZI3MlSNc5IMfslC-I-rowT4qS1Ew",
+  authDomain: "mastex-workout.firebaseapp.com",
+  databaseURL: "https://mastex-workout-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "mastex-workout",
+  storageBucket: "mastex-workout.firebasestorage.app",
+  messagingSenderId: "563181063823",
+  appId: "1:563181063823:web:2cd0a6229159a6c41f2afa",
+  measurementId: "G-671W1H7HVC"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+// Expose to global
+window._auth = auth;
+window._db = db;
+window._set = set;
+window._ref = ref;
+window._get = get;
+window._createUser = createUserWithEmailAndPassword;
+window._signIn = signInWithEmailAndPassword;
+window._signOut = signOut;
+window._updateProfile = updateProfile;
+window._onAuthStateChanged = onAuthStateChanged;
+
+// Workout data
+window.workoutData = [
+  {
+    day: "Senin", theme: "Daya Akar",
+    exercises: [
+      { name: "Easy run", detail: "5 km" },
+      { name: "Pull up", detail: "5 x" },
+      { name: "tidur /recovry", detail: "jam 9.30" },
+    ]
+  },
+  {
+    day: "Selasa", theme: "Kekuatan Batang",
+    exercises: [
+      { name: "Tempo Run", detail: "3 km ×" },
+      { name: "pull up", detail: "5 ×" },
+      { name: "tidur /recovry", detail: "jam 9.30" },
+    ]
+  },
+  {
+    day: "Rabu", theme: "Fleksibilitas Ranting",
+    exercises: [
+      { name: "Pull-Up", detail: "8 x" },
+      { name: "Recovery Run", detail: "1-3 km" },
+      { name: "tidur /recovry", detail: "jam 9.30" },
+    ]
+  },
+  {
+    day: "Kamis", theme: "Hari Pemulihan",
+    exercises: [
+      { name: "puull up", detail: "9 x" },
+      { name: "Interval run", detail: "400 x 3 meter" },
+      { name: "tidur /recovry", detail: "jam 9.30" },
+    ]
+  },
+  {
+    day: "Jumat", theme: "Daya Cabang",
+    exercises: [
+       { name: "Easy run", detail: "4-5 km" },
+       { name: "Pull up", detail: "8 x" },
+       { name: "tidur /recovry", detail: "jam 9.30" },
+    ]
+  },
+  {
+    day: "Sabtu", theme: "Stamina Rimba",
+    exercises: [
+      { name: "Long run ", detail: "8 km" },
+      { name: "tidur /recovry", detail: "jam 9.30" },
+    ]
+  },
+  {
+    day: "Minggu", theme: "Hari Suci Hutan",
+    exercises: [
+      { name: "Istirahat Total", detail: "Wajib!" },
+      { name: "Meditasi", detail: "15 menit" },
+      { name: "Stretching Ringan", detail: "10 menit" },
+      { name: "renang /swiming", detail: "putar 5 x" },
+      { name: "tidur /recovry", detail: "jam 9.30" },
+    ]
+  }
+];
+
+window.checkedState = {};
+
+function getWeekKey() {
+  const d = new Date();
+  const jan1 = new Date(d.getFullYear(), 0, 1);
+  const week = Math.ceil((((d - jan1) / 86400000) + jan1.getDay() + 1) / 7);
+  return `week_${d.getFullYear()}_${week}`;
+}
+
+window.getWeekKey = getWeekKey;
+
+function buildWorkoutUI() {
+  const container = document.getElementById('workout-days-container');
+  container.innerHTML = '';
+  let total = 0;
+
+  workoutData.forEach((dayObj, di) => {
+    const card = document.createElement('div');
+    card.className = 'day-card';
+    card.id = `day-${di}`;
+
+    const allDone = dayObj.exercises.every((_, ei) => checkedState[`${di}_${ei}`]);
+    if (allDone && dayObj.exercises.length > 0) card.classList.add('completed');
+
+    card.innerHTML = `
+      <div class="day-header">
+        <div class="day-name">🌿 ${dayObj.day} — ${dayObj.theme}</div>
+        <div class="day-check-all" onclick="checkAll(${di})">Semua ✓</div>
+      </div>
+      <div class="day-exercises">
+        ${dayObj.exercises.map((ex, ei) => {
+          total++;
+          const done = checkedState[`${di}_${ei}`];
+          return `
+            <div class="exercise-item ${done ? 'done' : ''}" onclick="toggleEx(${di},${ei})" id="ex-${di}-${ei}">
+              <div class="ex-checkbox ${done ? 'checked' : ''}"></div>
+              <div class="ex-info">
+                <div class="ex-name">${ex.name}</div>
+                <div class="ex-detail">${ex.detail}</div>
+              </div>
+              <div class="ex-checked-label">✓ Done</div>
+            </div>`;
+        }).join('')}
+      </div>`;
+    container.appendChild(card);
+  });
+
+  document.getElementById('total-count').textContent = total;
+  updateProgress();
+}
+
+window.buildWorkoutUI = buildWorkoutUI;
+
+window.toggleEx = function(di, ei) {
+  const key = `${di}_${ei}`;
+  checkedState[key] = !checkedState[key];
+
+  const item = document.getElementById(`ex-${di}-${ei}`);
+  const box = item.querySelector('.ex-checkbox');
+  if (checkedState[key]) {
+    item.classList.add('done');
+    box.classList.add('checked');
+  } else {
+    item.classList.remove('done');
+    box.classList.remove('checked');
+  }
+
+  // Check if whole day done
+  const dayObj = workoutData[di];
+  const allDone = dayObj.exercises.every((_, i) => checkedState[`${di}_${i}`]);
+  const card = document.getElementById(`day-${di}`);
+  if (allDone) card.classList.add('completed');
+  else card.classList.remove('completed');
+
+  updateProgress();
+};
+
+window.checkAll = function(di) {
+  const dayObj = workoutData[di];
+  dayObj.exercises.forEach((_, ei) => {
+    checkedState[`${di}_${ei}`] = true;
+    const item = document.getElementById(`ex-${di}-${ei}`);
+    if (item) {
+      item.classList.add('done');
+      item.querySelector('.ex-checkbox').classList.add('checked');
+    }
+  });
+  document.getElementById(`day-${di}`).classList.add('completed');
+  updateProgress();
+};
+
+function updateProgress() {
+  let done = 0, total = 0;
+  workoutData.forEach((d, di) => {
+    d.exercises.forEach((_, ei) => {
+      total++;
+      if (checkedState[`${di}_${ei}`]) done++;
+    });
+  });
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  const circumference = 2 * Math.PI * 35;
+  const offset = circumference - (pct / 100) * circumference;
+
+  const circle = document.getElementById('progress-circle');
+  if (circle) { circle.style.strokeDashoffset = offset; circle.style.strokeDasharray = circumference; }
+
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('done-count').textContent = done;
+  document.getElementById('total-count').textContent = total;
+}
+
+window.saveToFirebase = async function() {
+  const user = window._auth.currentUser;
+  if (!user) { showToast('⚠️', 'Silakan login terlebih dahulu'); return; }
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Menyimpan...';
+
+  try {
+    const weekKey = getWeekKey();
+    const dataToSave = {
+      uid: user.uid,
+      weekKey,
+      timestamp: new Date().toISOString(),
+      checkedState,
+      stats: {
+        totalExercises: 0,
+        completedExercises: 0,
+        pct: 0
+      }
+    };
+
+    let done = 0, total = 0;
+    workoutData.forEach((d, di) => {
+      d.exercises.forEach((_, ei) => {
+        total++;
+        if (checkedState[`${di}_${ei}`]) done++;
+      });
+    });
+    dataToSave.stats.totalExercises = total;
+    dataToSave.stats.completedExercises = done;
+    dataToSave.stats.pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    await window._set(window._ref(window._db, `workouts/${user.uid}/${weekKey}`), dataToSave);
+
+    const statusEl = document.getElementById('save-status');
+    statusEl.classList.add('visible');
+    setTimeout(() => statusEl.classList.remove('visible'), 3000);
+    showToast('🌿', 'Progress berhasil disimpan ke Firebase!');
+  } catch (err) {
+    showToast('⚠️', 'Gagal menyimpan: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Simpan Progress';
+  }
+};
+
+async function loadFromFirebase(uid) {
+  try {
+    const weekKey = getWeekKey();
+    const snapshot = await window._get(window._ref(window._db, `workouts/${uid}/${weekKey}`));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      window.checkedState = data.checkedState || {};
+    } else {
+      window.checkedState = {};
+    }
+  } catch (e) {
+    window.checkedState = {};
+  }
+  buildWorkoutUI();
+}
+
+// Auth state
+window._onAuthStateChanged(window._auth, (user) => {
+  if (user) {
+    const name = user.displayName || user.email.split('@')[0];
+    document.getElementById('display-name').textContent = name;
+    loadFromFirebase(user.uid);
+  }
+});
+
+window.doLogin = async function() {
+  if (!window._signIn || !window._auth) { showError('Sistem belum siap, tunggu sebentar...'); return; }
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
+  const btn = document.getElementById('login-btn');
+
+  clearMessages();
+  if (!email || !pass) { showError('Isi semua kolom!'); return; }
+
+  btn.disabled = true; btn.textContent = 'Masuk...';
+  try {
+    await window._signIn(window._auth, email, pass);
+    showPage('workout-page');
+    showToast('🌳', 'Selamat datang, Pejuang Hutan!');
+  } catch (e) {
+    showError(getFirebaseError(e.code));
+  } finally {
+    btn.disabled = false; btn.textContent = 'Masuk ke Hutan';
+  }
+};
+
+window.doRegister = async function() {
+  if (!window._createUser || !window._auth) { showError('Sistem belum siap, tunggu sebentar...'); return; }
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-password').value;
+  const btn = document.getElementById('reg-btn');
+
+  clearMessages();
+  if (!name || !email || !pass) { showError('Isi semua kolom!'); return; }
+  if (pass.length < 6) { showError('Password minimal 6 karakter'); return; }
+
+  btn.disabled = true; btn.textContent = 'Mendaftar...';
+  try {
+    const cred = await window._createUser(window._auth, email, pass);
+    await window._updateProfile(cred.user, { displayName: name });
+    document.getElementById('display-name').textContent = name;
+    showPage('workout-page');
+    showToast('🌿', 'Akun berhasil dibuat! Selamat bergabung!');
+  } catch (e) {
+    showError(getFirebaseError(e.code));
+  } finally {
+    btn.disabled = false; btn.textContent = 'Bergabung';
+  }
+};
+
+window.doLogout = async function() {
+  await window._signOut(window._auth);
+  window.checkedState = {};
+  showPage('landing-page');
+  showToast('🍃', 'Sampai jumpa, Pejuang!');
+};
+
+function getFirebaseError(code) {
+  const errors = {
+    'auth/user-not-found': 'Email tidak ditemukan',
+    'auth/wrong-password': 'Password salah',
+    'auth/email-already-in-use': 'Email sudah terdaftar',
+    'auth/invalid-email': 'Format email tidak valid',
+    'auth/weak-password': 'Password terlalu lemah',
+    'auth/invalid-credential': 'Email atau password salah',
+    'auth/too-many-requests': 'Terlalu banyak percobaan, coba lagi nanti'
+  };
+  return errors[code] || 'Terjadi kesalahan. Coba lagi.';
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg; el.classList.add('show');
+}
+function clearMessages() {
+  document.getElementById('error-msg').classList.remove('show');
+  document.getElementById('success-msg').classList.remove('show');
+}
+</script>
+
+<script>
+// ─── 3D Forest Canvas ───
+function initForestCanvas() {
+  const canvas = document.getElementById('forest-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const trees = [];
+  const particles = [];
+
+  // Generate trees
+  for (let i = 0; i < 18; i++) {
+    trees.push({
+      x: (i / 17) * canvas.width + (Math.random() - 0.5) * 60,
+      baseY: canvas.height,
+      height: 120 + Math.random() * 200,
+      width: 30 + Math.random() * 40,
+      layer: Math.random(),
+      sway: Math.random() * Math.PI * 2,
+      swaySpeed: 0.003 + Math.random() * 0.004,
+      color: `hsl(${130 + Math.random() * 30}, ${40 + Math.random() * 20}%, ${8 + Math.random() * 12}%)`
+    });
+  }
+  trees.sort((a, b) => a.layer - b.layer);
+
+  // Particles (fireflies)
+  for (let i = 0; i < 30; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.7,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.3,
+      size: 1 + Math.random() * 2,
+      alpha: Math.random(),
+      alphaDir: Math.random() > 0.5 ? 1 : -1,
+      alphaSpeed: 0.005 + Math.random() * 0.015
+    });
+  }
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Background gradient
+    const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    bg.addColorStop(0, '#020b04');
+    bg.addColorStop(0.4, '#04100a');
+    bg.addColorStop(1, '#0a1a0d');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Moon glow
+    const moonGlow = ctx.createRadialGradient(canvas.width * 0.75, 80, 0, canvas.width * 0.75, 80, 200);
+    moonGlow.addColorStop(0, 'rgba(82,183,136,0.06)');
+    moonGlow.addColorStop(1, 'transparent');
+    ctx.fillStyle = moonGlow;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Ground glow
+    const gndGlow = ctx.createLinearGradient(0, canvas.height * 0.6, 0, canvas.height);
+    gndGlow.addColorStop(0, 'transparent');
+    gndGlow.addColorStop(1, 'rgba(45,106,79,0.12)');
+    ctx.fillStyle = gndGlow;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw trees
+    trees.forEach(tree => {
+      tree.sway += tree.swaySpeed;
+      const swayAmt = Math.sin(tree.sway) * 3 * tree.layer;
+
+      ctx.save();
+      ctx.translate(tree.x + swayAmt, tree.baseY);
+
+      // Shadow/glow behind tree
+      const alpha = 0.03 + tree.layer * 0.05;
+      ctx.shadowColor = `rgba(82,183,136,${alpha})`;
+      ctx.shadowBlur = 20;
+
+      // Draw pine tree shape
+      const layers = 3;
+      for (let l = 0; l < layers; l++) {
+        const ly = -(tree.height * 0.3 * l);
+        const lh = tree.height * 0.55;
+        const lw = tree.width * (1 - l * 0.2);
+
+        ctx.beginPath();
+        ctx.moveTo(0, ly);
+        ctx.lineTo(-lw / 2, ly + lh);
+        ctx.lineTo(lw / 2, ly + lh);
+        ctx.closePath();
+
+        const treeGrad = ctx.createLinearGradient(-lw / 2, ly, lw / 2, ly + lh);
+        treeGrad.addColorStop(0, tree.color);
+        treeGrad.addColorStop(1, 'rgba(2,8,4,0.9)');
+        ctx.fillStyle = treeGrad;
+        ctx.fill();
+      }
+
+      // Trunk
+      ctx.fillStyle = `hsl(25, 30%, ${5 + tree.layer * 5}%)`;
+      ctx.fillRect(-4, -tree.height * 0.15, 8, tree.height * 0.18);
+
+      ctx.restore();
+    });
+
+    // Firefly particles
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.alpha += p.alphaDir * p.alphaSpeed;
+      if (p.alpha > 1) { p.alpha = 1; p.alphaDir = -1; }
+      if (p.alpha < 0) { p.alpha = 0; p.alphaDir = 1; }
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height * 0.7;
+      if (p.y > canvas.height * 0.7) p.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(212,160,23,${p.alpha * 0.8})`;
+      ctx.shadowColor = `rgba(212,160,23,${p.alpha * 0.6})`;
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+
+    t++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ─── PAGE NAVIGATION ───
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  if (id === 'landing-page') {
+    setTimeout(initForestCanvas, 50);
+  }
+  if (id === 'workout-page') {
+    const now = new Date();
+    document.getElementById('today-date').textContent = now.toLocaleDateString('id-ID', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+    buildWorkoutUI();
+  }
+}
+
+window.showPage = showPage;
+
+function showLogin(tab) {
+  showPage('login-page');
+  if (tab === 'register') switchTab('register');
+  else switchTab('login');
+}
+window.showLogin = showLogin;
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.textContent.toLowerCase().includes(tab === 'login' ? 'masuk' : 'daftar'))
+      b.classList.add('active');
+  });
+  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('error-msg').classList.remove('show');
+  document.getElementById('success-msg').classList.remove('show');
+}
+window.switchTab = switchTab;
+
+// ─── TOAST ───
+let toastTimeout;
+function showToast(icon, msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast-msg').textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => toast.classList.remove('show'), 3500);
+}
+window.showToast = showToast;
+
+// ─── LOADING SEQUENCE ───
+const loadTexts = ['Menanam benih...', 'Menumbuhkan akar...', 'Memanggil roh hutan...', 'Mempersiapkan arena...', 'Siap bertarung!'];
+let ltIdx = 0;
+const ltEl = document.getElementById('loading-text');
+
+const ltInterval = setInterval(() => {
+  ltIdx++;
+  if (ltIdx < loadTexts.length && ltEl) ltEl.textContent = loadTexts[ltIdx];
+  if (ltIdx >= loadTexts.length - 1) clearInterval(ltInterval);
+}, 700);
+
+setTimeout(() => {
+  const ls = document.getElementById('loading-screen');
+  ls.style.transition = 'opacity 0.8s ease';
+  ls.style.opacity = '0';
+  setTimeout(() => {
+    ls.style.display = 'none';
+    showPage('landing-page');
+  }, 800);
+}, 4000);
+</script>
+</body>
+</html>
