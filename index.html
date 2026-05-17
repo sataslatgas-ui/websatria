@@ -1531,6 +1531,11 @@ window.doRegister = async function() {
   try {
     const cred = await window._createUser(window._auth, email, pass);
     await window._updateProfile(cred.user, { displayName: name });
+    await window._set(window._ref(window._db, 'users/' + cred.user.uid), {
+  displayName: name,
+  email: email,
+  createdAt: new Date().toISOString()
+});
     document.getElementById('display-name').textContent = name;
     showPage('workout-page');
     showToast('🌿', 'Akun berhasil dibuat! Selamat bergabung!');
