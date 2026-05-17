@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MASTEX — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --forest-dark: #0a1a0d;
+    --forest-deep: #0f2414;
+    --forest-mid: #1a3a20;
+    --forest-green: #2d6a4f;
+    --forest-light: #40916c;
+    --forest-bright: #52b788;
+    --leaf-gold: #d4a017;
+    --leaf-amber: #e8c56a;
+    --bark: #3d2b1f;
+    --cream: #f0ead6;
+    --danger: #e05252;
+    --warn: #e8a83a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--forest-dark);
+    color: var(--cream);
+    min-height: 100vh;
+  }
+
+  /* ─── LOGIN ─── */
+  #login-screen {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at center, #0f2414 0%, #0a1a0d 70%);
+  }
+
+  .login-box {
+    background: rgba(15,36,20,0.8);
+    border: 1px solid rgba(82,183,136,0.2);
+    border-radius: 6px;
+    padding: 48px 40px;
+    width: 100%; max-width: 400px;
+    backdrop-filter: blur(16px);
+    text-align: center;
+  }
+
+  .login-box .emblem {
+    font-size: 3rem; margin-bottom: 12px;
+    filter: drop-shadow(0 0 12px rgba(82,183,136,0.5));
+  }
+
+  .login-box h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--forest-bright), var(--leaf-gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+
+  .login-box .subtitle {
+    font-size: 0.72rem; letter-spacing: 0.3em;
+    color: rgba(82,183,136,0.5); text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .login-box input {
+    width: 100%;
+    background: rgba(10,26,13,0.6);
+    border: 1px solid rgba(82,183,136,0.2);
+    border-radius: 3px;
+    padding: 12px 16px;
+    color: var(--cream);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 12px;
+    transition: border-color 0.3s;
+  }
+  .login-box input:focus { border-color: var(--forest-bright); }
+
+  .login-box button {
+    width: 100%;
+    background: linear-gradient(135deg, var(--forest-green), var(--forest-light));
+    color: var(--cream);
+    border: none;
+    padding: 13px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 4px;
+  }
+  .login-box button:hover { opacity: 0.85; }
+
+  .login-error {
+    color: var(--danger);
+    font-size: 0.82rem;
+    margin-top: 10px;
+    min-height: 20px;
+  }
+
+  /* ─── DASHBOARD ─── */
+  #dashboard { display: none; }
+
+  /* Header */
+  .dash-header {
+    background: rgba(10,26,13,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(82,183,136,0.15);
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .dash-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, var(--forest-bright), var(--leaf-gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dash-logo span {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    color: rgba(82,183,136,0.5);
+    -webkit-text-fill-color: rgba(82,183,136,0.5);
+    display: block;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex; align-items: center; gap: 20px;
+  }
+
+  .live-dot {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.75rem; letter-spacing: 0.2em;
+    color: var(--forest-bright); text-transform: uppercase;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--forest-bright);
+    box-shadow: 0 0 8px rgba(82,183,136,0.8);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .btn-logout {
+    background: transparent;
+    border: 1px solid rgba(82,183,136,0.3);
+    color: rgba(82,183,136,0.7);
+    padding: 6px 18px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* ─── WEEK SELECTOR ─── */
+  .week-bar {
+    background: rgba(15,36,20,0.6);
+    border-bottom: 1px solid rgba(82,183,136,0.08);
+    padding: 14px 32px;
+    display: flex; align-items: center; gap: 16px;
+  }
+
+  .week-bar label {
+    font-size: 0.72rem; letter-spacing: 0.3em;
+    color: rgba(82,183,136,0.6); text-transform: uppercase;
+  }
+
+  .week-bar select {
+    background: rgba(10,26,13,0.8);
+    border: 1px solid rgba(82,183,136,0.2);
+    color: var(--cream);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    padding: 6px 14px;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .week-bar select:focus { border-color: var(--forest-bright); }
+
+  .refresh-btn {
+    background: transparent;
+    border: 1px solid rgba(82,183,136,0.2);
+    color: var(--forest-bright);
+    padding: 6px 14px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .refresh-btn:hover { background: rgba(82,183,136,0.1); }
+
+  .user-count-badge {
+    margin-left: auto;
+    background: rgba(82,183,136,0.1);
+    border: 1px solid rgba(82,183,136,0.2);
+    color: var(--forest-bright);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* ─── SUMMARY CARDS ─── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(82,183,136,0.08);
+    border-bottom: 1px solid rgba(82,183,136,0.08);
+  }
+
+  .sum-card {
+    background: rgba(10,26,13,0.7);
+    padding: 24px 28px;
+    text-align: center;
+  }
+
+  .sum-val {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--forest-bright), var(--leaf-gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .sum-label {
+    font-size: 0.72rem; letter-spacing: 0.25em;
+    color: rgba(82,183,136,0.5); text-transform: uppercase;
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  .dash-body {
+    padding: 28px 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    color: var(--forest-bright);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(82,183,136,0.1);
+  }
+
+  /* ─── USER CARDS ─── */
+  .users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  .user-card {
+    background: rgba(15,36,20,0.6);
+    border: 1px solid rgba(82,183,136,0.12);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+    animation: cardIn 0.4s ease-out both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .user-card:hover {
+    border-color: rgba(82,183,136,0.3);
+    transform: translateY(-2px);
+  }
+
+  .user-card-header {
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 14px;
+    border-bottom: 1px solid rgba(82,183,136,0.08);
+    cursor: pointer;
+  }
+
+  .user-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--forest-green), var(--forest-mid));
+    border: 1px solid rgba(82,183,136,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    color: var(--forest-bright);
+    flex-shrink: 0;
+  }
+
+  .user-info { flex: 1; min-width: 0; }
+
+  .user-name {
+    font-size: 1rem; font-weight: 600;
+    color: var(--cream);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .user-email {
+    font-size: 0.75rem;
+    color: rgba(240,234,214,0.4);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .user-pct-badge {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    height: 3px;
+    background: rgba(82,183,136,0.1);
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--forest-bright), var(--leaf-gold));
+    transition: width 0.6s ease;
+  }
+
+  /* Day breakdown */
+  .user-days {
+    padding: 14px 20px;
+    display: none;
+  }
+
+  .user-card.expanded .user-days { display: block; }
+  .user-card.expanded .user-card-header { border-bottom-color: rgba(82,183,136,0.15); }
+
+  .day-row {
+    display: flex; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(82,183,136,0.06);
+    gap: 12px;
+  }
+  .day-row:last-child { border-bottom: none; }
+
+  .day-name-label {
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(240,234,214,0.6);
+    width: 70px; flex-shrink: 0;
+  }
+
+  .day-theme-label {
+    font-size: 0.72rem;
+    color: rgba(82,183,136,0.5);
+    flex: 1;
+    font-style: italic;
+  }
+
+  .day-progress {
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .day-bar-wrap {
+    width: 80px; height: 4px;
+    background: rgba(82,183,136,0.1);
+    border-radius: 2px; overflow: hidden;
+  }
+
+  .day-bar-fill {
+    height: 100%; border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .day-done-label {
+    font-size: 0.72rem;
+    color: rgba(240,234,214,0.4);
+    width: 36px; text-align: right;
+    flex-shrink: 0;
+  }
+
+  .day-complete-tag {
+    font-size: 0.65rem;
+    color: var(--forest-bright);
+    letter-spacing: 0.1em;
+    background: rgba(82,183,136,0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  /* Exercises detail */
+  .ex-chips {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    margin-top: 5px;
+    padding-left: 82px;
+    padding-bottom: 6px;
+  }
+
+  .ex-chip {
+    font-size: 0.68rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid;
+  }
+
+  .ex-chip.done {
+    background: rgba(82,183,136,0.12);
+    border-color: rgba(82,183,136,0.3);
+    color: var(--forest-bright);
+  }
+
+  .ex-chip.undone {
+    background: rgba(240,234,214,0.03);
+    border-color: rgba(240,234,214,0.1);
+    color: rgba(240,234,214,0.3);
+    text-decoration: line-through;
+  }
+
+  .last-save {
+    font-size: 0.68rem;
+    color: rgba(82,183,136,0.4);
+    padding: 8px 20px;
+    border-top: 1px solid rgba(82,183,136,0.06);
+    text-align: right;
+    font-style: italic;
+  }
+
+  /* ─── EMPTY / LOADING ─── */
+  .empty-state {
+    text-align: center; padding: 80px 20px;
+    color: rgba(82,183,136,0.3);
+  }
+
+  .empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+  .empty-state p { font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; }
+
+  .loading-state {
+    text-align: center; padding: 60px 20px;
+    color: rgba(82,183,136,0.5);
+  }
+
+  .spinner {
+    width: 32px; height: 32px;
+    border: 2px solid rgba(82,183,136,0.2);
+    border-top-color: var(--forest-bright);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .dash-body { padding: 20px 16px; }
+    .dash-header { padding: 14px 16px; }
+    .week-bar { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+  }
+
+  @media (max-width: 600px) {
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .users-grid { grid-template-columns: 1fr; }
+    .header-right { gap: 10px; }
+    .live-dot span { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── LOGIN SCREEN ─── -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="emblem">🌲</div>
+    <h1>MASTEX</h1>
+    <p class="subtitle">Admin Dashboard</p>
+    <input type="email" id="admin-email" placeholder="Email admin" autocomplete="email">
+    <input type="password" id="admin-pass" placeholder="Password" autocomplete="current-password">
+    <button onclick="doAdminLogin()">Masuk sebagai Admin</button>
+    <div class="login-error" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ─── DASHBOARD ─── -->
+<div id="dashboard">
+
+  <div class="dash-header">
+    <div class="dash-logo">
+      MASTEX
+      <span>Admin Dashboard</span>
+    </div>
+    <div class="header-right">
+      <div class="live-dot">
+        <div class="dot"></div>
+        <span>Real-time</span>
+      </div>
+      <button class="btn-logout" onclick="doAdminLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="week-bar">
+    <label>Minggu:</label>
+    <select id="week-select" onchange="loadWeekData()">
+      <!-- filled by JS -->
+    </select>
+    <button class="refresh-btn" onclick="loadWeekData()">↻ Refresh</button>
+    <div class="user-count-badge" id="user-count-badge">0 anggota</div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="sum-card">
+      <div class="sum-val" id="sum-total-users">0</div>
+      <div class="sum-label">Total Anggota</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-val" id="sum-active">0</div>
+      <div class="sum-label">Sudah Simpan Minggu Ini</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-val" id="sum-avg-pct">0%</div>
+      <div class="sum-label">Rata-rata Progress</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-val" id="sum-perfect">0</div>
+      <div class="sum-label">Progress 100%</div>
+    </div>
+  </div>
+
+  <div class="dash-body">
+    <div class="section-title">Progress Anggota</div>
+    <div id="users-container">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Memuat data...</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, onValue, get }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDbQx6ZI3MlSNc5IMfslC-I-rowT4qS1Ew",
+  authDomain: "mastex-workout.firebaseapp.com",
+  databaseURL: "https://mastex-workout-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "mastex-workout",
+  storageBucket: "mastex-workout.firebasestorage.app",
+  messagingSenderId: "563181063823",
+  appId: "1:563181063823:web:2cd0a6229159a6c41f2afa"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+window._auth = auth;
+window._db = db;
+window._ref = ref;
+window._onValue = onValue;
+window._get = get;
+window._signIn = signInWithEmailAndPassword;
+window._signOut = signOut;
+window._onAuthStateChanged = onAuthStateChanged;
+
+// Workout data (same as main app)
+window.workoutData = [
+  { day: "Senin", theme: "Daya Akar", exercises: [
+    { name: "Squat" }, { name: "Romanian Deadlift" }, { name: "Leg Press" }, { name: "Calf Raise" }, { name: "Plank" }
+  ]},
+  { day: "Selasa", theme: "Kekuatan Batang", exercises: [
+    { name: "Bench Press" }, { name: "Incline Dumbbell" }, { name: "Cable Fly" }, { name: "Tricep Pushdown" }, { name: "Dips" }
+  ]},
+  { day: "Rabu", theme: "Fleksibilitas Ranting", exercises: [
+    { name: "Pull-Up" }, { name: "Seated Row" }, { name: "Lat Pulldown" }, { name: "Bicep Curl" }, { name: "Face Pull" }
+  ]},
+  { day: "Kamis", theme: "Hari Pemulihan", exercises: [
+    { name: "Yoga Hutan" }, { name: "Foam Rolling" }, { name: "Jalan Kaki" }, { name: "Pernapasan" }
+  ]},
+  { day: "Jumat", theme: "Daya Cabang", exercises: [
+    { name: "Overhead Press" }, { name: "Arnold Press" }, { name: "Lateral Raise" }, { name: "Front Raise" }, { name: "Shrug" }
+  ]},
+  { day: "Sabtu", theme: "Stamina Rimba", exercises: [
+    { name: "HIIT Cardio" }, { name: "Battle Rope" }, { name: "Box Jump" }, { name: "Burpee" }, { name: "Mountain Climber" }
+  ]},
+  { day: "Minggu", theme: "Hari Suci Hutan", exercises: [
+    { name: "Istirahat Total" }, { name: "Meditasi" }, { name: "Stretching Ringan" }
+  ]}
+];
+
+// Auth state listener
+window._onAuthStateChanged(window._auth, (user) => {
+  if (user) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    initWeekSelector();
+    loadWeekData();
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('dashboard').style.display = 'none';
+  }
+});
+
+// Week key helpers
+function getWeekKey(date) {
+  const d = date || new Date();
+  const jan1 = new Date(d.getFullYear(), 0, 1);
+  const week = Math.ceil((((d - jan1) / 86400000) + jan1.getDay() + 1) / 7);
+  return `week_${d.getFullYear()}_${week}`;
+}
+
+function weekKeyToLabel(key) {
+  // key: week_2026_21
+  const parts = key.split('_');
+  if (parts.length < 3) return key;
+  const year = parseInt(parts[1]);
+  const week = parseInt(parts[2]);
+  // Get monday of that week
+  const jan1 = new Date(year, 0, 1);
+  const dayOfWeek = jan1.getDay() || 7;
+  const monday = new Date(jan1);
+  monday.setDate(jan1.getDate() + (week - 1) * 7 - (dayOfWeek - 1));
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const fmt = (d) => d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+  return `Minggu ke-${week} (${fmt(monday)} – ${fmt(sunday)} ${year})`;
+}
+
+window.initWeekSelector = function() {
+  const sel = document.getElementById('week-select');
+  sel.innerHTML = '';
+  const now = new Date();
+  // Show last 8 weeks + current
+  for (let i = 0; i <= 7; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i * 7);
+    const key = getWeekKey(d);
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = i === 0 ? `${weekKeyToLabel(key)} ← Minggu ini` : weekKeyToLabel(key);
+    sel.appendChild(opt);
+  }
+};
+
+// Real-time listener ref
+let unsubscribe = null;
+
+window.loadWeekData = function() {
+  const weekKey = document.getElementById('week-select').value;
+  const container = document.getElementById('users-container');
+  container.innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Memuat data...</p></div>`;
+
+  // Unsubscribe previous listener
+  if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+
+  const workoutsRef = window._ref(window._db, 'workouts');
+
+  unsubscribe = window._onValue(workoutsRef, (snapshot) => {
+    if (!snapshot.exists()) {
+      renderEmpty(container, 'Belum ada data workout');
+      updateSummary([], 0);
+      return;
+    }
+
+    const allData = snapshot.val();
+    const users = [];
+
+    Object.entries(allData).forEach(([uid, weekData]) => {
+      const weekEntry = weekData[weekKey];
+      users.push({ uid, weekEntry: weekEntry || null });
+    });
+
+    renderUsers(container, users, weekKey);
+    updateSummary(users, users.length);
+  });
+};
+
+function renderEmpty(container, msg) {
+  container.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-icon">🌿</div>
+      <p>${msg}</p>
+    </div>`;
+}
+
+function updateSummary(users, total) {
+  const active = users.filter(u => u.weekEntry).length;
+  const pcts = users.filter(u => u.weekEntry).map(u => u.weekEntry.stats?.pct || 0);
+  const avg = pcts.length ? Math.round(pcts.reduce((a,b) => a+b, 0) / pcts.length) : 0;
+  const perfect = pcts.filter(p => p === 100).length;
+
+  document.getElementById('sum-total-users').textContent = total;
+  document.getElementById('sum-active').textContent = active;
+  document.getElementById('sum-avg-pct').textContent = avg + '%';
+  document.getElementById('sum-perfect').textContent = perfect;
+  document.getElementById('user-count-badge').textContent = total + ' anggota';
+}
+
+function getPctColor(pct) {
+  if (pct === 100) return '#52b788';
+  if (pct >= 60) return '#d4a017';
+  if (pct >= 30) return '#e8a83a';
+  return '#e05252';
+}
+
+function renderUsers(container, users, weekKey) {
+  if (!users.length) { renderEmpty(container, 'Belum ada anggota terdaftar'); return; }
+
+  // Sort: has data first, then by pct desc
+  users.sort((a, b) => {
+    const pa = a.weekEntry?.stats?.pct || -1;
+    const pb = b.weekEntry?.stats?.pct || -1;
+    return pb - pa;
+  });
+
+  const grid = document.createElement('div');
+  grid.className = 'users-grid';
+
+  users.forEach((u, idx) => {
+    const card = document.createElement('div');
+    card.className = 'user-card';
+    card.style.animationDelay = (idx * 0.05) + 's';
+
+    const entry = u.weekEntry;
+    const pct = entry?.stats?.pct || 0;
+    const done = entry?.stats?.completedExercises || 0;
+    const total = entry?.stats?.totalExercises || 0;
+    const checkedState = entry?.checkedState || {};
+    const timestamp = entry?.timestamp ? new Date(entry.timestamp).toLocaleString('id-ID') : null;
+
+    // Try to get name from checkedState uid key — name stored on user obj
+    const uid = u.uid;
+    const initial = uid.charAt(0).toUpperCase();
+    const pctColor = getPctColor(pct);
+
+    // Build day rows
+    let dayRowsHTML = '';
+    workoutData.forEach((dayObj, di) => {
+      const exTotal = dayObj.exercises.length;
+      const exDone = dayObj.exercises.filter((_, ei) => checkedState[`${di}_${ei}`]).length;
+      const dayPct = exTotal > 0 ? Math.round((exDone / exTotal) * 100) : 0;
+      const barColor = dayPct === 100 ? '#52b788' : dayPct >= 50 ? '#d4a017' : '#e05252';
+
+      const chipsHTML = dayObj.exercises.map((ex, ei) => {
+        const isDone = checkedState[`${di}_${ei}`];
+        return `<span class="ex-chip ${isDone ? 'done' : 'undone'}">${ex.name}</span>`;
+      }).join('');
+
+      dayRowsHTML += `
+        <div class="day-row">
+          <span class="day-name-label">${dayObj.day}</span>
+          <span class="day-theme-label">${dayObj.theme}</span>
+          <div class="day-progress">
+            <div class="day-bar-wrap">
+              <div class="day-bar-fill" style="width:${dayPct}%;background:${barColor}"></div>
+            </div>
+            <span class="day-done-label">${exDone}/${exTotal}</span>
+          </div>
+          ${dayPct === 100 ? '<span class="day-complete-tag">✓ Selesai</span>' : ''}
+        </div>
+        <div class="ex-chips">${chipsHTML}</div>`;
+    });
+
+    card.innerHTML = `
+      <div class="user-card-header" onclick="toggleCard(this)">
+        <div class="user-avatar">${initial}</div>
+        <div class="user-info">
+          <div class="user-name">${uid}</div>
+          <div class="user-email">${done}/${total} exercise selesai</div>
+        </div>
+        <div class="user-pct-badge" style="color:${pctColor}">${pct}%</div>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" style="width:${pct}%"></div>
+      </div>
+      ${entry ? `
+        <div class="user-days">
+          ${dayRowsHTML}
+        </div>
+        ${timestamp ? `<div class="last-save">Terakhir disimpan: ${timestamp}</div>` : ''}
+      ` : `
+        <div class="user-days">
+          <div style="text-align:center;padding:20px;color:rgba(82,183,136,0.3);font-size:0.8rem;letter-spacing:0.2em;">BELUM ADA DATA MINGGU INI</div>
+        </div>
+      `}`;
+
+    grid.appendChild(card);
+  });
+
+  container.innerHTML = '';
+  container.appendChild(grid);
+
+  // Try to load display names from Firebase Auth users list
+  loadUserNames();
+}
+
+// Load user display names from workouts data
+async function loadUserNames() {
+  // Names are stored in workout data if user saved with displayName
+  // We'll try to read from 'users' node if exists, fallback to UID
+  try {
+    const usersSnap = await window._get(window._ref(window._db, 'users'));
+    if (usersSnap.exists()) {
+      const usersData = usersSnap.val();
+      document.querySelectorAll('.user-card').forEach(card => {
+        const nameEl = card.querySelector('.user-name');
+        const uid = nameEl.textContent;
+        if (usersData[uid]?.displayName) {
+          nameEl.textContent = usersData[uid].displayName;
+          card.querySelector('.user-avatar').textContent = usersData[uid].displayName.charAt(0).toUpperCase();
+        }
+      });
+    }
+  } catch(e) { /* Silently ignore */ }
+}
+
+window.toggleCard = function(header) {
+  const card = header.closest('.user-card');
+  card.classList.toggle('expanded');
+};
+
+window.doAdminLogin = async function() {
+  if (!window._signIn) { document.getElementById('login-err').textContent = 'Sistem belum siap...'; return; }
+  const email = document.getElementById('admin-email').value.trim();
+  const pass = document.getElementById('admin-pass').value;
+  const errEl = document.getElementById('login-err');
+  errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = 'Isi email dan password!'; return; }
+  try {
+    await window._signIn(window._auth, email, pass);
+  } catch(e) {
+    const errs = {
+      'auth/invalid-credential': 'Email atau password salah',
+      'auth/user-not-found': 'Akun tidak ditemukan',
+      'auth/wrong-password': 'Password salah',
+      'auth/too-many-requests': 'Terlalu banyak percobaan, coba lagi nanti'
+    };
+    errEl.textContent = errs[e.code] || 'Login gagal: ' + e.message;
+  }
+};
+
+window.doAdminLogout = async function() {
+  if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  await window._signOut(window._auth);
+};
+
+// Enter key on login
+document.getElementById('admin-pass').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') doAdminLogin();
+});
+</script>
+
+</body>
+</html>
